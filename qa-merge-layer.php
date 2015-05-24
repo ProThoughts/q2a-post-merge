@@ -24,18 +24,41 @@ class qa_html_theme_layer extends qa_html_theme_base {
 		parent::doctype();
 	}
 
-	function html() {
-		if (qa_post_text('ajax_merge_get_from')) {
-			$posts = qa_db_read_all_assoc(
-					qa_db_query_sub(
-							"SELECT postid,title FROM ^posts WHERE postid IN (#,#)", qa_post_text('ajax_merge_get_from'), qa_post_text('ajax_merge_get_to')
-					)
-			);
-			if ($posts[0]['postid'] == (int) qa_post_text('ajax_merge_get_from')) {
-				echo '{"from":"' . $posts[0]['title'] . '","to":"' . $posts[1]['title'] . '","from_url":"' . qa_path_html(qa_q_request((int) qa_post_text('ajax_merge_get_from'), $posts[0]['title']), null, qa_opt('site_url')) . '","to_url":"' . qa_path_html(qa_q_request((int) qa_post_text('ajax_merge_get_to'), $posts[1]['title']), null, qa_opt('site_url')) . '"}';
-			} else {
-				echo '{"from":"' . $posts[1]['title'] . '","to":"' . $posts[0]['title'] . '","from_url":"' . qa_path_html(qa_q_request((int) qa_post_text('ajax_merge_get_from'), $posts[1]['title']), null, qa_opt('site_url')) . '","to_url":"' . qa_path_html(qa_q_request((int) qa_post_text('ajax_merge_get_to'), $posts[0]['title']), null, qa_opt('site_url')) . '"}';
+	function getTitleFromResultsAndId($postsResults, $id) {
+		foreach ($postsResults as $post) {
+			if ($post['postid'] == $id) {
+				return $post['title'];
 			}
+		}
+		return '';
+	}
+
+	function mergingInfoAjaxCallHandler() {
+		$idFrom = qa_post_text('ajax_merge_get_from');
+		$idTo = qa_post_text('ajax_merge_get_to');
+		if (isset($idFrom, $idTo)) {
+			$idFrom = (int) $idFrom;
+			$idTo = (int) $idTo;
+			$posts = qa_db_read_all_assoc(qa_db_query_sub("
+				SELECT postid,title FROM ^posts
+				WHERE postid IN (#, #) AND type LIKE 'Q%'
+			", $idFrom, $idTo));
+				$titleFrom = $this->getTitleFromResultsAndId($posts, $idFrom);
+				$titleTo = $this->getTitleFromResultsAndId($posts, $idTo);
+				$result = array(
+					'from' => $titleFrom,
+					'to' => $titleTo,
+					'from_url' => qa_q_path_html($idFrom, $titleFrom),
+					'to_url' => qa_q_path_html($idTo, $titleTo)
+				);
+				echo json_encode($result);
+			return true; // AJAX call handled
+		}
+		return false; // AJAX call not handled
+	}
+
+	function html() {
+		if ($this->mergingInfoAjaxCallHandler()) {  // AJAX call handled
 			return;
 		}
 		parent::html();
