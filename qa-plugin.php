@@ -52,16 +52,14 @@
 			return array($error1,$error2);
 		}
 		else {
-			
+
 			$acount = (int)$titles[0]['acount']+(int)$titles[1]['acount'];
-			
-			$text = '<div class="qa-content-merged"> '.str_replace('^post',qa_path(qa_q_request((int)qa_post_text('merge_to'), ($titles[0]['postid'] == $to?$titles[0]['title']:$titles[1]['title'])), null, qa_opt('site_url')),qa_opt('merge_question_merged')).' </div>';
-			
+
 			qa_db_query_sub(
 				"UPDATE ^posts SET parentid=# WHERE parentid=#",
 				$to, $from
 			);
-			
+
 			qa_db_query_sub(
 				"UPDATE ^posts SET acount=# WHERE postid=#",
 				$acount,$to

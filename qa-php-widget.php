@@ -69,7 +69,7 @@
 
 
                         return array(
-                                'ok' => ($ok && !isset($error)) ? $ok : null,
+                                'ok' => $ok,
 
                                 'fields' => $fields,
 

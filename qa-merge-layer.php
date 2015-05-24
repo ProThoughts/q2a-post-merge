@@ -41,61 +41,59 @@
 			}
 			qa_html_theme_base::html();
 		}
-		
-		
+
+
 		function head_custom()
 		{
 			if($this->template == 'admin') {
 				$this->output("
-	<script>			
+	<script>
 	function mergePluginGetPosts() {
 		var from=jQuery('#merge_from').val();
 		var to=jQuery('#merge_to').val();
 
-		var dataString = 'ajax_merge_get_from='+from+'&ajax_merge_get_to='+to;  
-		jQuery.ajax({  
-		  type: 'POST',  
-		  url: '".qa_self_html()."',  
-		  data: dataString,  
-		  dataType: 'json',  
+		var dataString = 'ajax_merge_get_from='+from+'&ajax_merge_get_to='+to;
+		jQuery.ajax({
+		  type: 'POST',
+		  url: '".qa_self_html()."',
+		  data: dataString,
+		  dataType: 'json',
 		  success: function(json) {
 				jQuery('#merge_from_out').html('Merging from: <a href=\"'+json.from_url+'\">'+json.from+'</a>');
 				jQuery('#merge_to_out').html('To: <a href=\"'+json.to_url+'\">'+json.to+'</a>');
-			} 
+			}
 		});
 		return false;
 	}
 	</script>");
-			}	
+			}
 			qa_html_theme_base::head_custom();
 		}
-	}
 
 
+		function q_view_clear() {
 
-	function q_view_clear() {
+			// call default method output
+			qa_html_theme_base::q_view_clear();
 
-		// call default method output
-		qa_html_theme_base::q_view_clear();
+			// return if not admin!
+			if (qa_get_logged_in_level() < QA_USER_LEVEL_ADMIN) {
+				return;
+			}
 
-		// return if not admin!
-		if (qa_get_logged_in_level() < QA_USER_LEVEL_ADMIN) {
-			return;
-		}
+			// check if question is duplicate
+			$closed = (@$this->content['q_view']['raw']['closedbyid'] !== null);
+			if($closed) {
+				// check if duplicate
+				$duplicate = qa_db_read_one_value( qa_db_query_sub('SELECT postid FROM `^posts`
+																		WHERE `postid` = #
+																		AND `type` = "Q"
+																		;', $this->content['q_view']['raw']['closedbyid']), true );
+				if($duplicate) {
+					$this->output('<div id="mergeDup" style="margin:10px 0 0 120px;padding:5px 10px;background:#FCC;border:1px solid #AAA;"><h3>Merge Duplicate:</h3>');
 
-		// check if question is duplicate
-		$closed = (@$this->content['q_view']['raw']['closedbyid'] !== null);
-		if($closed) {
-			// check if duplicate
-			$duplicate = qa_db_read_one_value( qa_db_query_sub('SELECT postid FROM `^posts`
-																	WHERE `postid` = #
-																	AND `type` = "Q"
-																	;', $this->content['q_view']['raw']['closedbyid']), true );
-			if($duplicate) {
-				$this->output('<div id="mergeDup" style="margin:10px 0 0 120px;padding:5px 10px;background:#FCC;border:1px solid #AAA;"><h3>Merge Duplicate:</h3>');
-
-				// form output
-				$this->output('
+					// form output
+					$this->output('
 <FORM METHOD="POST">
 <TABLE>
 	<TR>
@@ -125,9 +123,9 @@
 
 </TABLE>
 </FORM>				');
-				$this->output('</div>');
+					$this->output('</div>');
+				}
 			}
-		}
 
+		}
 	}
-}
