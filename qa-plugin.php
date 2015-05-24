@@ -4,7 +4,7 @@
   Plugin Name: Post Merge
   Plugin URI: https://github.com/pupi1985/q2a-post-merge
   Plugin Description: Provides question posts merging capabilities
-  Plugin Version: 0.3.1
+  Plugin Version: 0.3.2
   Plugin Date: 2015-05-25
   Plugin Author: NoahY (Extended by pupi1985)
   Plugin Author URI: http://question2answer.org/qa/user/pupi1985

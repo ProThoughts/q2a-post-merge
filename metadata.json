@@ -2,7 +2,7 @@
 	"name": "Post Merge",
 	"uri": "https://github.com/pupi1985/q2a-post-merge",
 	"description": "Provides question posts merging capabilities",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"date": "2015-05-25",
 	"author": "NoahY (Extended by pupi1985)",
 	"author_uri": "http://question2answer.org/qa/user/pupi1985",
