@@ -1,18 +1,17 @@
 <?php
 
 /*
-  Plugin Name: Merge
-  Plugin URI: https://github.com/NoahY/q2a-merge
-  Plugin Update Check URI: https://raw.github.com/NoahY/q2a-merge/master/qa-plugin.php
-  Plugin Description: Provides merging capabilities
-  Plugin Version: 0.2
-  Plugin Date: 2011-10-15
-  Plugin Author: NoahY
-  Plugin Author URI: http://www.question2answer.org/qa/user/NoahY
-  Plugin License: GPLv2
+  Plugin Name: Post Merge
+  Plugin URI: https://github.com/pupi1985/q2a-post-merge
+  Plugin Description: Provides question posts merging capabilities
+  Plugin Version: 0.3.1
+  Plugin Date: 2015-05-25
+  Plugin Author: NoahY (Extended by pupi1985)
+  Plugin Author URI: http://question2answer.org/qa/user/pupi1985
+  Plugin License: GPLv3
+  Plugin Update Check URI: https://raw.githubusercontent.com/pupi1985/q2a-post-merge/master/qa-plugin.php
   Plugin Minimum Question2Answer Version: 1.4
  */
-
 
 if (!defined('QA_VERSION')) { // don't allow this page to be requested directly from browser
 	header('Location: ../../');
