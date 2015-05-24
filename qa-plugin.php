@@ -40,9 +40,9 @@ function qa_merge_do_merge() {
 		if (empty($titles)) {
 			$error1 = 'Post not found.';
 			$error2 = $error1;
-		} else if ($titles[0]['postid'] == $from) {
+		} else if (isset($titles[0]['postid']) && $titles[0]['postid'] == $from) {
 			$error2 = 'Post not found.';
-		} else if ($titles[0]['postid'] == $to) {
+		} else if (isset($titles[0]['postid']) && $titles[0]['postid'] == $to) {
 			$error1 = 'Post not found.';
 		} else {
 			$error1 = 'unknown error.';
