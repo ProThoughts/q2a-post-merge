@@ -34,13 +34,14 @@
 								else {
 									$error1 = $merged[0];
 									$error2 = $merged[1];
+									$qa_content['error'] = "Error merging posts.";
 								}
                         }
 
                 //      Create the form for display
-						
+
                         $fields = array();
-						
+
                         $fields[] = array(
                                 'label' => 'From',
                                 'tags' => 'NAME="merge_from" id="merge_from"',
