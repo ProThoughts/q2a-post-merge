@@ -3,7 +3,7 @@
 	class qa_html_theme_layer extends qa_html_theme_base {
 
 	// theme replacement functions
-		
+
 		function doctype() {
 			if(@$this->content['error'] == qa_lang_html('main/page_not_found') && preg_match('/^[0-9]+\//',$this->request) !== false) {
 				$pid = preg_replace('/\/.*/','',$this->request);
