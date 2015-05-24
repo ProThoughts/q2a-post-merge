@@ -45,20 +45,26 @@ class qa_html_theme_layer extends qa_html_theme_base {
 		if ($this->template == 'admin') {
 			$this->output("
 	<script>
+	function noah_pm_removeError(element) {
+		element.closest('form').find('.qa-form-tall-error').closest('tr').remove();
+	}
 	function mergePluginGetPosts() {
+		noah_pm_removeError($('#merge_from_out'));
+		noah_pm_removeError($('#merge_to_out'));
+
 		var from=jQuery('#merge_from').val();
 		var to=jQuery('#merge_to').val();
 
 		var dataString = 'ajax_merge_get_from='+from+'&ajax_merge_get_to='+to;
 		jQuery.ajax({
-		  type: 'POST',
-		  url: '" . qa_self_html() . "',
-		  data: dataString,
-		  dataType: 'json',
-		  success: function(json) {
-				jQuery('#merge_from_out').html('Merging from: <a href=\"'+json.from_url+'\">'+json.from+'</a>');
-				jQuery('#merge_to_out').html('To: <a href=\"'+json.to_url+'\">'+json.to+'</a>');
-			}
+		type: 'POST',
+		url: '" . qa_self_html() . "',
+		data: dataString,
+		dataType: 'json',
+		success: function(json) {
+			jQuery('#merge_from_out').html('Merging from: <a href=\"'+json.from_url+'\">'+json.from+'</a>');
+			jQuery('#merge_to_out').html('To: <a href=\"'+json.to_url+'\">'+json.to+'</a>');
+		}
 		});
 		return false;
 	}

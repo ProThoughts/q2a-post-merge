@@ -50,7 +50,7 @@ class qa_merge_admin {
 			'error' => $error2,
 		);
 		$fields[] = array(
-			'value' => '<input type="button" onclick="mergePluginGetPosts()" value="show"><div id="merge_from_out"></div><div id="merge_to_out"></div>',
+			'value' => '<input type="button" onclick="mergePluginGetPosts()" value="Show"><div id="merge_from_out"></div><div id="merge_to_out"></div>',
 			'type' => 'static',
 		);
 		$fields[] = array(
