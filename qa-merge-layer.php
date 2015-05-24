@@ -21,7 +21,7 @@ class qa_html_theme_layer extends qa_html_theme_base {
 		if (qa_post_text('ajax_merge_get_from')) {
 			return;
 		}
-		qa_html_theme_base::doctype();
+		parent::doctype();
 	}
 
 	function html() {
@@ -38,7 +38,7 @@ class qa_html_theme_layer extends qa_html_theme_base {
 			}
 			return;
 		}
-		qa_html_theme_base::html();
+		parent::html();
 	}
 
 	function head_custom() {
@@ -70,13 +70,13 @@ class qa_html_theme_layer extends qa_html_theme_base {
 	}
 	</script>");
 		}
-		qa_html_theme_base::head_custom();
+		parent::head_custom();
 	}
 
 	function q_view_clear() {
 
 		// call default method output
-		qa_html_theme_base::q_view_clear();
+		parent::q_view_clear();
 
 		// return if not admin!
 		if (qa_get_logged_in_level() < QA_USER_LEVEL_ADMIN) {
