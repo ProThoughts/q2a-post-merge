@@ -75,4 +75,20 @@ class qa_merge_admin {
 		);
 	}
 
+	public function init_queries($table_list) {
+		$tablename = qa_db_add_table_prefix('postmeta');
+		if (!in_array($tablename, $table_list)) {
+			return
+				'CREATE TABLE IF NOT EXISTS ^postmeta (
+					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+					post_id bigint(20) unsigned NOT NULL,
+					meta_key varchar(255) DEFAULT \'\',
+					meta_value longtext,
+					PRIMARY KEY (meta_id),
+					KEY post_id (post_id),
+					KEY meta_key (meta_key)
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8';
+		}
+	}
+
 }

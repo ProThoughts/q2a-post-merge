@@ -25,7 +25,9 @@ Installation
      at the command prompt (on Linux, Windows is a bit different)
    - To download directly, go to the `project page`_ and click **Download**
 
-#. navigate to your site, go to **Admin -> Plugins** on your q2a install and find the Merge section.
+#. Navigate to your site, go to **Admin -> Plugins** and you'll see a message asking for database initialization. Follow the steps in the message
+
+#. In the **Plugins** section you'll find the Post Merge plugin
 
 .. _Question2Answer: http://www.question2answer.org/install.php
 .. _git: http://git-scm.com/
