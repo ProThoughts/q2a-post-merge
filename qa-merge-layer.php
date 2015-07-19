@@ -8,9 +8,12 @@ class qa_html_theme_layer extends qa_html_theme_base {
 		if (@$this->content['error'] == qa_lang_html('main/page_not_found') && preg_match('/^[0-9]+\//', $this->request) !== false) {
 			$pid = preg_replace('/\/.*/', '', $this->request);
 			$merged = qa_db_read_one_assoc(
-					qa_db_query_sub(
-							"SELECT ^posts.postid as postid,^posts.title as title FROM ^postmeta, ^posts WHERE ^postmeta.meta_key='merged_with' AND ^postmeta.post_id=# AND ^posts.postid=^postmeta.meta_value", $pid
-					), true
+				qa_db_query_sub(
+					'SELECT p.postid, p.title FROM qa_posts p ' .
+					'JOIN qa_postmeta pm ON p.postid = pm.meta_value ' .
+					'WHERE pm.post_id = # AND pm.meta_key = $',
+					$pid, 'merged_with'
+				), true
 			);
 			if ($merged) {
 				qa_redirect(qa_q_request($merged['postid'], $merged['title']), array('merged' => $pid));
@@ -39,19 +42,20 @@ class qa_html_theme_layer extends qa_html_theme_base {
 		if (isset($idFrom, $idTo)) {
 			$idFrom = (int) $idFrom;
 			$idTo = (int) $idTo;
-			$posts = qa_db_read_all_assoc(qa_db_query_sub("
-				SELECT postid,title FROM ^posts
-				WHERE postid IN (#, #) AND type LIKE 'Q%'
-			", $idFrom, $idTo));
-				$titleFrom = $this->getTitleFromResultsAndId($posts, $idFrom);
-				$titleTo = $this->getTitleFromResultsAndId($posts, $idTo);
-				$result = array(
-					'from' => $titleFrom,
-					'to' => $titleTo,
-					'from_url' => qa_q_path_html($idFrom, $titleFrom),
-					'to_url' => qa_q_path_html($idTo, $titleTo)
-				);
-				echo json_encode($result);
+			$posts = qa_db_read_all_assoc(qa_db_query_sub(
+				'SELECT postid,title FROM ^posts ' .
+				'WHERE postid IN (#, #) AND type LIKE $',
+				$idFrom, $idTo , 'Q%'
+			));
+			$titleFrom = $this->getTitleFromResultsAndId($posts, $idFrom);
+			$titleTo = $this->getTitleFromResultsAndId($posts, $idTo);
+			$result = array(
+				'from' => $titleFrom,
+				'to' => $titleTo,
+				'from_url' => qa_q_path_html($idFrom, $titleFrom),
+				'to_url' => qa_q_path_html($idTo, $titleTo)
+			);
+			echo json_encode($result);
 			return true; // AJAX call handled
 		}
 		return false; // AJAX call not handled
