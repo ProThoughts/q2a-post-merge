@@ -22,16 +22,17 @@ qa_register_plugin_layer('qa-merge-layer.php', 'Merge Layer');
 
 qa_register_plugin_module('module', 'qa-php-widget.php', 'qa_merge_admin', 'Merge Admin');
 
-function qa_merge_do_merge() {
+function noah_pm_merge_do_merge() {
 	qa_opt('merge_question_merged', qa_post_text('merge_question_merged'));
 
 	$from = (int) qa_post_text('merge_from');
 	$to = (int) qa_post_text('merge_to');
 
 	$titles = qa_db_read_all_assoc(
-			qa_db_query_sub(
-					"SELECT postid,title,acount FROM ^posts WHERE postid IN (#,#)", qa_post_text('merge_from'), qa_post_text('merge_to')
-			)
+		qa_db_query_sub(
+			'SELECT postid,title,acount FROM ^posts ' .
+			'WHERE postid IN (#, #)', $from, $to
+		)
 	);
 	if (count($titles) != 2) {
 		$error1 = null;
