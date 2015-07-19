@@ -2,10 +2,6 @@
 
 class qa_merge_admin {
 
-	function allow_template($template) {
-		return ($template != 'admin');
-	}
-
 	function option_default($option) {
 		switch ($option) {
 			case 'merge_question_merged':

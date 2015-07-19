@@ -20,7 +20,7 @@ if (!defined('QA_VERSION')) { // don't allow this page to be requested directly 
 
 qa_register_plugin_layer('qa-merge-layer.php', 'Merge Layer');
 
-qa_register_plugin_module('module', 'qa-php-widget.php', 'qa_merge_admin', 'Merge Admin');
+qa_register_plugin_module('module', 'qa-module-admin.php', 'qa_merge_admin', 'Merge Admin');
 
 function noah_pm_merge_do_merge() {
 	qa_opt('merge_question_merged', qa_post_text('merge_question_merged'));
