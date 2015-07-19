@@ -1,18 +1,5 @@
 <?php
 
-/*
-  Plugin Name: Post Merge
-  Plugin URI: https://github.com/pupi1985/q2a-post-merge
-  Plugin Description: Provides question posts merging capabilities
-  Plugin Version: 0.3.2
-  Plugin Date: 2015-05-25
-  Plugin Author: NoahY (Extended by pupi1985)
-  Plugin Author URI: http://question2answer.org/qa/user/pupi1985
-  Plugin License: GPLv3
-  Plugin Update Check URI: https://raw.githubusercontent.com/pupi1985/q2a-post-merge/master/qa-plugin.php
-  Plugin Minimum Question2Answer Version: 1.4
- */
-
 if (!defined('QA_VERSION')) { // don't allow this page to be requested directly from browser
 	header('Location: ../../');
 	exit;
