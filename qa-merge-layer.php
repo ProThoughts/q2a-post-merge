@@ -20,7 +20,15 @@ class qa_html_theme_layer extends qa_html_theme_base {
 			}
 		} else if (qa_get('merged')) {
 			$this->content['error'] = str_replace('^post', qa_get('merged'), qa_opt('merge_question_merged'));
+		} else if (qa_post_text('merge_from') && qa_get_logged_in_level() >= QA_USER_LEVEL_ADMIN) {
+			$merged = noah_pm_merge_do_merge();
+			if ($merged === true) {
+				qa_redirect(qa_q_request(qa_post_text('merge_to'), null), array('merged' => qa_post_text('merge_from')));
+			} else {
+				$this->content['error'] = "Error merging posts.";
+			}
 		}
+
 		if (qa_post_text('ajax_merge_get_from')) {
 			return;
 		}
@@ -119,7 +127,7 @@ class qa_html_theme_layer extends qa_html_theme_base {
 																		AND `type` = "Q"
 																		;', $this->content['q_view']['raw']['closedbyid']), true);
 			if ($duplicate) {
-				$this->output('<div id="mergeDup" style="margin:10px 0 0 120px;padding:5px 10px;background:#FCC;border:1px solid #AAA;"><h3>Merge Duplicate:</h3>');
+				$this->output('<div id="mergeDup" style="margin:10px 0 0 120px;padding:5px 10px;"><h3>Merge Duplicate:</h3>');
 
 				// form output
 				$this->output('
