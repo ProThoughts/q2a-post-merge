@@ -23,7 +23,7 @@ class qa_merge_admin {
 		$error2 = null;
 
 		if (qa_clicked('merge_question_process')) {
-			$merged = qa_merge_do_merge();
+			$merged = noah_pm_merge_do_merge();
 			if ($merged === true) {
 				$ok = 'Posts merged.';
 			} else {

@@ -49,24 +49,77 @@ function noah_pm_merge_do_merge() {
 		}
 		return array($error1, $error2);
 	} else {
-		$acount = (int) $titles[0]['acount'] + (int) $titles[1]['acount'];
-
-		qa_db_query_sub(
-				"UPDATE ^posts SET parentid=# WHERE parentid=#", $to, $from
-		);
-
-		qa_db_query_sub(
-				"UPDATE ^posts SET acount=# WHERE postid=#", $acount, $to
-		);
-
-		qa_db_query_sub(
-				"INSERT INTO ^postmeta (post_id,meta_key,meta_value) VALUES (#,'merged_with',#)", $from, $to
-		);
-
-		require_once QA_INCLUDE_DIR . 'qa-app-posts.php';
-		qa_post_delete($from);
+		noah_pm_merge($from, $to);
 		return true;
 	}
+}
+
+function noah_pm_merge($postIdFrom, $postIdTo) {
+	require_once QA_INCLUDE_DIR . 'db/votes.php';
+	require_once QA_INCLUDE_DIR . 'app/posts.php';
+
+	$followPosts = qa_post_get_question_commentsfollows($postIdFrom); // Could be questions or comments
+	// Remove any questions fetched so that there are only answers and comments
+	foreach ($followPosts as $followPostId => $followPost) {
+		if ($followPost['basetype'] === 'Q') {
+			unset($followPosts[$followPostId]);
+		}
+	}
+
+	$answers = qa_post_get_question_answers($postIdFrom);
+
+	$children = array_merge($answers, $followPosts);  // Contains answers to question, comments to question and comments to answers
+
+	// Fetch questions
+	$questions = qa_db_single_select(qa_db_posts_selectspec(null, array($postIdFrom, $postIdTo), true));
+	$questionFrom = $questions[$postIdFrom];
+	$questionTo = $questions[$postIdTo];
+
+	// Unindex all children
+	foreach ($children as $child) {
+		qa_post_unindex($child['postid']);
+	}
+
+	// Remove selected answer and updates points of the owner of the answer
+	$selectedAnswerId = $questionFrom['selchildid'];
+	if (isset($children[$selectedAnswerId])) {
+		qa_db_post_set_selchildid($postIdFrom, null, qa_get_logged_in_userid(), qa_remote_ip_address());
+		qa_db_points_update_ifuser($child['userid'], 'aselects');
+		qa_db_unselqcount_update();
+	}
+
+	// Change parents of all children that are child of the original question (excluding comments of answers)
+	foreach ($children as $child) {
+		if ($child['parentid'] == $postIdFrom) {
+			qa_db_post_set_parent($child['postid'], $postIdTo);
+		}
+	}
+
+	// Recalculate data for new question and the cache
+	qa_db_post_acount_update($postIdTo);
+	qa_db_hotness_update($postIdTo);
+	qa_db_unaqcount_update();
+	qa_db_unupaqcount_update();
+
+	// Reindex only if all posts are visible and not queued for moderation
+	if ($questionTo['type'] === 'Q') {
+		foreach ($children as $child) {
+			if ($child['type'] === 'A' || $child['type'] === 'C') {
+				qa_post_index(
+					$child['postid'], $child['type'], $postIdTo, $child['parentid'], null, $child['content'], $child['format'], qa_viewer_text($child['content'], $child['format']), null, $child['categoryid']
+				);
+			}
+		}
+	}
+
+	// Delete the original post
+	qa_post_delete($postIdFrom);
+
+	// Add the deleted post to the ^postmeta table
+	qa_db_query_sub(
+		'INSERT INTO ^postmeta (post_id, meta_key, meta_value) ' .
+		'VALUES (#, $, #)', $postIdFrom, 'merged_with', $postIdTo
+	);
 }
 
 /*
